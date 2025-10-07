@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Гостевая книга — Безопасная</title>
+    <style>
+        body { font-family: system-ui, Arial, sans-serif; margin: 2rem; }
+        form { display: grid; gap: .5rem; max-width: 520px; }
+        input, textarea { padding: .5rem; font-size: 1rem; }
+        .error { color: #b00; font-size: .9rem; }
+        .msg { border: 1px solid #ddd; padding: .75rem; margin: .5rem 0; border-radius: 6px; }
+        .meta { color: #555; font-size: .9rem; }
+        .nav { margin-bottom: 1rem; }
+        code { background: #f5f5f5; padding: 0 .25rem; }
+    </style>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+</head>
+<body>
+    <div class="nav">
+        <a href="/vulnerable/">Уязвимая версия (для демонстрации XSS)</a>
+    </div>
+    <h1>Гостевая книга — Безопасная</h1>
+    <p>
+        Здесь включены базовые защиты: валидация, экранирование выводимых данных, и строгая CSP без
+        <code>'unsafe-inline'</code>. Любой HTML из сообщений будет показан как текст, а не выполнен.
+    </p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <input name="user" placeholder="Имя" value="{{ request.POST.user|default:'' }}" />
+        {% if errors.user %}<div class="error">{{ errors.user }}</div>{% endif %}
+        <input name="e_mail" placeholder="E-mail" value="{{ request.POST.e_mail|default:'' }}" />
+        {% if errors.e_mail %}<div class="error">{{ errors.e_mail }}</div>{% endif %}
+        <textarea name="text_message" rows="4" placeholder="Сообщение (HTML будет экранирован)">{{ request.POST.text_message|default:'' }}</textarea>
+        {% if errors.text_message %}<div class="error">{{ errors.text_message }}</div>{% endif %}
+        <button type="submit">Добавить</button>
+    </form>
+
+    <h2>Сообщения</h2>
+    {% for g in entries %}
+        <div class="msg">
+            <div class="meta">{{ g.user }} — {{ g.e_mail }} — {{ g.data_time_message }}</div>
+            <!-- Безопасно: по умолчанию Django экранирует вывод переменных -->
+            <div class="body">{{ g.text_message }}</div>
+        </div>
+    {% empty %}
+        <p>Нет записей</p>
+    {% endfor %}
+</body>
+</html>
+
+

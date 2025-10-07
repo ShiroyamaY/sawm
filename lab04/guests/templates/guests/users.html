@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Таблица user — Регистрация и список</title>
+    <style>
+        body { font-family: system-ui, Arial, sans-serif; margin: 2rem; }
+        .tabs a { margin-right: .75rem; text-decoration: none; }
+        .tabs .active { font-weight: 700; }
+        form { display: grid; gap: .5rem; max-width: 420px; margin: 1rem 0; }
+        input, button { padding: .5rem; font-size: 1rem; }
+        table { border-collapse: collapse; margin-top: 1rem; width: 100%; max-width: 960px; }
+        th, td { border: 1px solid #ddd; padding: .5rem .75rem; text-align: left; }
+        .meta { color: #666; font-size: .9rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Безопасная гостевая</a> ·
+        <a href="/vulnerable/">Уязвимая гостевая</a>
+    </nav>
+
+    <h1>Таблица user</h1>
+    <p class="meta">Ниже можно зарегистрировать пользователя без/с хешированием и посмотреть, как пароли хранятся в БД.</p>
+
+    <div class="tabs">
+        <a href="/register/plain/" class="{% if active_tab == 'plain' %}active{% endif %}">Регистрация без хеша</a>
+        <a href="/register/hashed/" class="{% if active_tab == 'hashed' %}active{% endif %}">Регистрация с хешем</a>
+        <a href="/users/" class="{% if active_tab == 'list' %}active{% endif %}">Список пользователей</a>
+    </div>
+
+    {% if active_tab == 'plain' or active_tab == 'hashed' %}
+        <form method="post">
+            {% csrf_token %}
+            <input name="username" placeholder="Логин" required />
+            <input name="password" placeholder="Пароль" type="password" required />
+            <button type="submit">Зарегистрировать</button>
+        </form>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>Пароль (как хранится)</th>
+                <th>is_hashed</th>
+                <th>Создан</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td><code>{{ u.password }}</code></td>
+                <td>{{ u.is_hashed }}</td>
+                <td>{{ u.created_at }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">Нет пользователей</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+

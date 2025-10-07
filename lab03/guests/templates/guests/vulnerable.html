@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Гостевая книга — Уязвимая (XSS demo)</title>
+    <style>
+        body { font-family: system-ui, Arial, sans-serif; margin: 2rem; }
+        form { display: grid; gap: .5rem; max-width: 520px; }
+        input, textarea { padding: .5rem; font-size: 1rem; }
+        .note { color: #b00; margin-bottom: 1rem; }
+        .msg { border: 1px solid #ddd; padding: .75rem; margin: .5rem 0; border-radius: 6px; }
+        .meta { color: #555; font-size: .9rem; }
+        .nav { margin-bottom: 1rem; }
+    </style>
+    <script>
+        // На этой странице мы НИЧЕГО не фильтруем специально
+        // Это демонстрационно-уязвимая версия для показа XSS
+    </script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'">
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Безопасная версия</a>
+    </div>
+    <h1>Гостевая книга — Уязвимая</h1>
+    <p class="note">
+        Эта страница намеренно уязвима: введённый HTML/JS выводится как есть. 
+        Пример атаки: вставьте в поле «Сообщение» такой код: 
+        <code>&lt;script&gt;location.href='https://example.com'&lt;/script&gt;</code> 
+        или картинку: 
+        <code>&lt;img src=x onerror=alert('XSS')&gt;</code>.
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <input name="user" placeholder="Имя" />
+        <input name="e_mail" placeholder="E-mail" />
+        <textarea name="text_message" rows="4" placeholder="Сообщение (HTML разрешён)"></textarea>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <h2>Сообщения</h2>
+    {% for g in entries %}
+        <div class="msg">
+            <div class="meta">{{ g.user }} — {{ g.e_mail }} — {{ g.data_time_message }}</div>
+            <!-- Опасно: вывод без экранирования с помощью |safe -->
+            <div class="body">{{ g.text_message|safe }}</div>
+        </div>
+    {% empty %}
+        <p>Нет записей</p>
+    {% endfor %}
+</body>
+</html>
+
+

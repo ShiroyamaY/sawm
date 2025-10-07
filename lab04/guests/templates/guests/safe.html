@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Гостевая книга — Безопасная</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+</head>
+<body>
+    <nav>
+        <a href="/vulnerable/">Уязвимая версия</a> ·
+        <a href="/users/">Таблица user</a>
+    </nav>
+
+    <h1>Гостевая книга — Безопасная</h1>
+    <p>Ввод валидируется, вывод экранируется. HTML/JS не выполняется.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <input name="user" placeholder="Имя" />
+            {% if errors.user %}<div style="color:#b00">{{ errors.user }}</div>{% endif %}
+        </div>
+        <div>
+            <input name="e_mail" placeholder="E-mail" />
+            {% if errors.e_mail %}<div style="color:#b00">{{ errors.e_mail }}</div>{% endif %}
+        </div>
+        <div>
+            <textarea name="text_message" rows="4" placeholder="Сообщение"></textarea>
+            {% if errors.text_message %}<div style="color:#b00">{{ errors.text_message }}</div>{% endif %}
+        </div>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <h2>Сообщения</h2>
+    {% for g in entries %}
+        <div>
+            <div>{{ g.user }} — {{ g.e_mail }} — {{ g.data_time_message }}</div>
+            <div>{{ g.text_message }}</div>
+        </div>
+    {% empty %}
+        <p>Нет записей</p>
+    {% endfor %}
+</body>
+</html>
+
+

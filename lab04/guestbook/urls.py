@@ -1,0 +1,28 @@
+"""
+URL configuration for guestbook project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path
+from guests import views as guest_views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', guest_views.list_safe, name='safe'),
+    path('vulnerable/', guest_views.list_vulnerable, name='vulnerable'),
+    path('users/', guest_views.users_list, name='users_list'),
+    path('register/plain/', guest_views.register_plain, name='register_plain'),
+    path('register/hashed/', guest_views.register_hashed, name='register_hashed'),
+]

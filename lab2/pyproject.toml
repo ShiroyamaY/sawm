@@ -1,0 +1,14 @@
+[project]
+name = "sqli-demo"
+version = "0.1.0"
+description = "Django SQL injection demo with vulnerable and safe flows"
+requires-python = ">=3.10"
+dependencies = [
+	"django==5.0.9",
+]
+
+[tool.uv]
+# Default virtualenv location .venv
+
+
+
