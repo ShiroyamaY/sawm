@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ view.object|default_if_none:"Новая учетная запись" }}{% endblock %}
+{% block content %}
+<section class="card">
+  {% if view.object %}
+    <h1>Редактирование: {{ view.object.full_name }}</h1>
+  {% else %}
+    <h1>Новая учётная запись клиента</h1>
+  {% endif %}
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="form-errors">{{ field.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button class="button" type="submit">Сохранить</button>
+  </form>
+</section>
+{% endblock %}

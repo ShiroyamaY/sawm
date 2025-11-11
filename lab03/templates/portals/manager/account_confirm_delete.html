@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Удалить {{ object.full_name }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Удалить учётную запись</h1>
+  <p>Действие необратимо. Вы уверены, что хотите удалить {{ object.full_name }}?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="button button--secondary" type="submit">Да, удалить</button>
+    <a class="button" style="background:#9ca3af;" href="{% url 'manager-accounts' %}">Отмена</a>
+  </form>
+</section>
+{% endblock %}

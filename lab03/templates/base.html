@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}Лабораторная работа №5{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  </head>
+  <body>
+    <header class="layout__header">
+      <div class="layout__brand">
+        <a href="/" class="brand-link">Lab05 · Контроль доступа</a>
+      </div>
+      <nav class="layout__nav">
+        <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Безопасная форма</a>
+        <a href="/vulnerable/" {% if '/vulnerable' in request.path %}class="active"{% endif %}>Уязвимая форма</a>
+        <a href="/admin/panel/" {% if '/admin/panel' in request.path %}class="active"{% endif %}>Панель администратора</a>
+        <a href="/manager/workspace/" {% if '/manager' in request.path %}class="active"{% endif %}>Рабочая зона менеджера</a>
+      </nav>
+      <div class="layout__auth">
+        {% if request.user.is_authenticated %}
+          <span class="badge">Вы вошли как {{ request.user.username }} ({{ request.user.get_role_display }})</span>
+          <a class="button button--secondary" href="{% url 'logout' %}">Выход</a>
+        {% else %}
+          <a class="button" href="{% url 'login' %}">Войти</a>
+        {% endif %}
+      </div>
+    </header>
+    <main class="layout__content">
+      {% include "partials/messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

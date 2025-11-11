@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Рабочее пространство менеджера{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Рабочая зона менеджера</h1>
+  <p>После входа менеджер получает доступ только к разрешённым функциям: просмотр, изменение и удаление клиентских аккаунтов.</p>
+  <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+    <div>
+      <strong>Всего аккаунтов:</strong>
+      <div style="font-size:1.8rem;">{{ accounts_total }}</div>
+    </div>
+    <div>
+      <strong>Ожидают подтверждения:</strong>
+      <div style="font-size:1.8rem;">{{ pending_count }}</div>
+    </div>
+    <div>
+      <strong>Заблокированы:</strong>
+      <div style="font-size:1.8rem;">{{ blocked_count }}</div>
+    </div>
+  </div>
+  <p style="margin-top:1rem;">
+    <a class="button" href="{% url 'manager-accounts' %}">Перейти к учёткам</a>
+  </p>
+</section>
+
+<section class="card">
+  <h2>Последние обновления</h2>
+  <ul>
+    {% for account in recent_accounts %}
+      <li>
+        {{ account.full_name }} · {{ account.get_status_display }} · обновлено {{ account.updated_at|date:"d.m.Y H:i" }}
+      </li>
+    {% empty %}
+      <li>Нет обновлений. Создайте первый аккаунт.</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

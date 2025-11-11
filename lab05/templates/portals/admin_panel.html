@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Панель администратора{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Панель администратора</h1>
+  <p>Раздел доступен только после успешной аутентификации. Здесь мы управляем ролями и отслеживаем активность менеджеров.</p>
+</section>
+
+<section class="card">
+  <h2>Пользователи системы</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Логин</th>
+        <th>Роль</th>
+        <th>Email</th>
+        <th>Дата последнего входа</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.get_role_display }}</td>
+          <td>{{ user.email|default:"—" }}</td>
+          <td>{{ user.last_login|date:"d.m.Y H:i" |default:"—" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">Пока нет пользователей.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Последние изменения клиентских учёток</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Клиент</th>
+        <th>Email</th>
+        <th>Статус</th>
+        <th>Обновлено</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for account in recent_accounts %}
+        <tr>
+          <td>{{ account.full_name }}</td>
+          <td>{{ account.email }}</td>
+          <td>{{ account.get_status_display }}</td>
+          <td>{{ account.updated_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">Ещё не создано записей.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

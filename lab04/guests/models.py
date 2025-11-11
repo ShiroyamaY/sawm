@@ -12,21 +12,13 @@ class Guest(models.Model):
 
 
 class LabUser(models.Model):
-    """Простая модель пользователя для демонстрации хранения паролей.
-
-    ВАЖНО: Это демонстрационная модель для учебных целей. В реальных системах
-    следует использовать встроенную модель `django.contrib.auth.User` и её
-    механизмы хеширования.
-    """
-
     username = models.CharField(max_length=150, unique=True)
-    # Поле хранит либо открытый текст (для демонстрации уязвимости), либо хеш
     password = models.CharField(max_length=255)
     is_hashed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "user"  # Требование: выводить содержимое таблицы "user"
+        db_table = "user"
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
